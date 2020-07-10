@@ -14,11 +14,7 @@
         "editor.tabSize": 4,
         "editor.insertSpaces": true
     },
-    // pythonVSCode extension
-    "python.pythonPath": "C:\\Users\\sujit koley\\Anaconda3\\python.exe",
-   // "python.linting.pylintPath": "C:\\Users\\naveen_v01\\AppData\\Roaming\\Python\\Python37\\Scripts\\pylint.exe",
-  //  "python.linting.pycodestylePath": "C:\\Users\\naveen_v01\\AppData\\Roaming\\Python\\Python37\\Scripts\\pep8.exe",
-    // "python.formatting.yapfPath": "C:\\Users\\naveen_v01\\AppData\\Roaming\\Python\\Python37\\Scripts\\yapf.exe",
+
     "python.formatting.autopep8Path": "autopep8",
     "python.linting.pylintEnabled": true,
     "python.linting.flake8Enabled": false,

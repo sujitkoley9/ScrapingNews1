@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from typing import Container
 import scrapy
 from time import sleep
 from scrapy import Spider
@@ -22,41 +23,23 @@ from selenium.webdriver.support import expected_conditions as EC
 class NewsSpider(scrapy.Spider):
     name = 'news'
 
-    start_urls = ['https://coloradosun.com/']
-    allowed_domains = ['coloradosun.com']
+    start_urls = ['https://www.cbsnews.com/latest/us/']
+    #allowed_domains = ['coloradosun.com']
 
-    no_of_pages = 2
+    no_of_pages = 100
 
     def start_requests(self):
-        self.driver = webdriver.Chrome('chromedriver')
-        self.driver.get(self.start_urls[0])
+
 
         cnt = 1
         while cnt <= self.no_of_pages:
-            try:
-                next_page = self.driver.find_element_by_xpath(
-                    '//div[@class="content-list__more-button-wrapper___plob2 content-list__more-button-wrapper"]/ \
-                button[@class="content-list__load-more-button___2UuAm content-list__load-more-button button-secondary-light"]')
-                sleep(10)
-                self.logger.info('Sleeping for 10 seconds.')
-                next_page.click()
-
-                cnt += 1
-            except NoSuchElementException:
-                self.logger.info('No more pages to load.')
-
-                break
-        source_page = self.driver.page_source
-        self.driver.quit()
-        yield Request(self.start_urls[0],  callback=self.parse_news, meta={'source_page': source_page
-                                                                  })
+            yield Request(self.start_urls[0]+str(cnt),  callback=self.parse_news)
+            cnt =cnt+1
 
     def parse_news(self, response):
 
-        source_page = response.meta['source_page']
-        sel = Selector(text=source_page)
-        news_url_list = sel.xpath(
-            '//h2[@class="river__title___krYaD river__title" or @class="card__title___W5a0A card__title"]/a/@href').extract()
+        news_url_list = response.xpath(
+            '//article[@class="item  item--type-article item--topic-us"]/a[@class="item__anchor"]/@href').extract()
 
         for url_item in news_url_list:
             yield Request(url=url_item,  callback=self.parse_news_in_details, meta={'url': url_item
@@ -68,7 +51,7 @@ class NewsSpider(scrapy.Spider):
         url = response.meta['url']
         try:
             news = response.xpath(
-                '//div[@class="body-content__wrapper___1nN2E body-content__wrapper rich-text body-content__sidebar___3Bplp body-content__sidebar"]/div[@id="pico"]/p/text()').extract()
+                '//section[@class="content__body"]/p/text()').extract()
 
             ScrapingnewsItem_data = ScrapingnewsItem()
             ScrapingnewsItem_data['url'] = url
